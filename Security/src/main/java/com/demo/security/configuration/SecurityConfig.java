@@ -10,6 +10,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -33,13 +34,19 @@ public class SecurityConfig {
         return http
                 .csrf().disable()
                 .cors().disable()
-                .authorizeHttpRequests((authz) -> authz
+                .formLogin()
+                .loginProcessingUrl("/login")
+                .loginPage("/loginForm")
+                .defaultSuccessUrl("/")
+                .and()
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/user/**").permitAll()
+
                         .anyRequest().authenticated()
+
                 )
-                .httpBasic(withDefaults())
                 .build();
     }
-
 
 
 }
