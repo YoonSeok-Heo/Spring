@@ -34,16 +34,31 @@ public class SecurityConfig {
         return http
                 .csrf().disable()
                 .cors().disable()
-                .formLogin()
-                .loginProcessingUrl("/login")
-                .loginPage("/loginForm")
-                .defaultSuccessUrl("/")
-                .and()
-                .authorizeHttpRequests(authz -> authz
+                .logout((logout) -> logout
+                        .logoutUrl("/logout").permitAll()
+//                        .logoutSuccessUrl("/login")
+                )
+                .logout(withDefaults())
+                .formLogin((login) ->login
+//                        .loginPage("/login").permitAll()
+//                        .loginProcessingUrl("/login").permitAll()
+                        .defaultSuccessUrl("/").permitAll()
+                )
+//                .formLogin().disable()
+                .httpBasic().disable()
+                .authorizeHttpRequests((authz) -> authz
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/logout").permitAll()
                         .requestMatchers("/user/**").permitAll()
+                        .requestMatchers("/session").permitAll()
+                        .requestMatchers("/join").permitAll()
+                        .requestMatchers("/amdin").hasRole("ADMIN")
 
+//                        .requestMatchers("/").permitAll()
                         .anyRequest().authenticated()
-
+                )
+                .exceptionHandling((exception) -> exception
+                        .accessDeniedPage("/accessDeniedPage")
                 )
                 .build();
     }

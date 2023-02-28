@@ -6,6 +6,8 @@ import jakarta.persistence.Id;
 import lombok.Data;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
 @Entity
 @Data
 public class User {
@@ -15,6 +17,10 @@ public class User {
     private String password;
     private String name;
     private String role;
+
+    public List<String> getRole(){
+        return List.of(role.split(","));
+    }
 
     public void encryptPassword(PasswordEncoder passwordEncoder){
         password = passwordEncoder.encode(password);
